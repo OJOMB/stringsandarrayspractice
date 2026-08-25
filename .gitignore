@@ -1,0 +1,64 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE - VSCode
+.vscode/
+*.code-workspace
+launch.json
+settings.json
+
+# IDE - GoLand / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Other
+.sublime-workspace
+.sublime-project
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+bin/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# debug files
+*/__debug*
