@@ -31,8 +31,10 @@ func characterReplacement(s string, k int) int {
 	// freqs must represent what is in the current l-r window
 	freqs := make(map[rune]int)
 	l := 0
+	// maxLen keeps track of the length of the longest valid window seen so far
 	maxLen := 0
-	maxFreq := 0 // historical high-water mark; never decreases
+	// maxFreq keeps track of the highest freq of any character in the current l-r window
+	maxFreq := 0
 
 	for r, ru := range rs {
 		freqs[ru]++

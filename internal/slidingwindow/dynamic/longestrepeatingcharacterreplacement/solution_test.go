@@ -20,6 +20,11 @@ func TestCharacterReplacement(t *testing.T) {
 		},
 		{
 			"ABAB",
+			0,
+			1,
+		},
+		{
+			"ABAB",
 			1,
 			3,
 		},
