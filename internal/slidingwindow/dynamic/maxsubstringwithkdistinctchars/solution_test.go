@@ -12,6 +12,9 @@ func TestLengthOfLongestSubstringKDistinct(t *testing.T) {
 		k      int
 		expect int
 	}{
+		{"", 2, 0},
+		{"a", 0, 0},
+		{"a", 1, 1},
 		{"eceba", 2, 3},
 		{"aa", 1, 2},
 		{"abcabcabc", 2, 2},

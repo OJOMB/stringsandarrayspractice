@@ -10,7 +10,7 @@ Example:
 Input: target = 7, nums = []int{2, 3, 1, 2, 4, 3}
 Output: 2
 
-(The subarray [4, 3] has sum 7, and is the shortest one meeting the target.)
+(The subarray [4, 3] has sum 7, and is the shortest one meeting the target)
 */
 
 func minSubArrayLen(target int, nums []int) int {
@@ -22,7 +22,10 @@ func minSubArrayLen(target int, nums []int) int {
 	for right := range n {
 		sum += nums[right] // always grow
 
-		for sum >= target { // shrink while still valid
+		// we only ever shrink the window when the current sum is greater than or equal to the target
+		// we only increment right, in this manner we make sure we explore all possible subarrays in O(n) time
+		for sum >= target {
+			// shrink while still valid
 			if right-left+1 < minLen {
 				minLen = right - left + 1
 			}
