@@ -35,14 +35,13 @@ func minWindow(s, t string) string {
 	rsS := []rune(s)
 
 	// LETS MAKE A MAP OF t for source of truth
-	var tMap = make(map[rune]int, len(rsT))
+	var canonicalTMap = make(map[rune]int, len(rsT))
 	for _, ru := range rsT {
-		i := tMap[ru]
-		tMap[ru] = i + 1
+		canonicalTMap[ru]++
 	}
 
 	// keep a clone map to track curr window
-	currTMap := maps.Clone(tMap)
+	currTMap := maps.Clone(canonicalTMap)
 
 	var (
 		min   []rune
@@ -50,7 +49,7 @@ func minWindow(s, t string) string {
 		found bool
 	)
 	for r, ru := range rsS {
-		if _, ok := tMap[ru]; ok {
+		if _, ok := canonicalTMap[ru]; ok {
 			currTMap[ru]--
 			if currTMap[ru] == 0 {
 				delete(currTMap, ru)
@@ -75,17 +74,12 @@ func minWindow(s, t string) string {
 
 			// try and shrink from the left
 			lRu := rsS[l]
-			if _, ok := tMap[lRu]; ok {
-				i := currTMap[lRu]
-				currTMap[lRu] = i + 1
+			if _, ok := canonicalTMap[lRu]; ok {
+				currTMap[lRu]++
 			}
 
 			l++
 		}
-	}
-
-	if !found {
-		return ""
 	}
 
 	return string(min)
@@ -99,4 +93,59 @@ func isCurrTMapValid(tMap map[rune]int) bool {
 	}
 
 	return true
+}
+
+// full disclosure i got the below solution from Claude
+
+func claudeMinWindow(s string, t string) string {
+	if len(s) == 0 || len(t) == 0 || len(s) < len(t) {
+		return ""
+	}
+
+	// we need to count the frequency of each character in t
+	need := make(map[byte]int)
+	for i := 0; i < len(t); i++ {
+		need[t[i]]++
+	}
+
+	required := len(need) // distinct chars that must be fully satisfied
+
+	windowCounts := make(map[byte]int)
+	formed := 0 // how many distinct chars currently meet their required count
+
+	l := 0
+	bestLen := -1
+	bestL := 0
+
+	for r := 0; r < len(s); r++ {
+		c := s[r]
+		windowCounts[c]++
+
+		// crossed from "not enough" to "exactly enough" for this char
+		if need[c] > 0 && windowCounts[c] == need[c] {
+			formed++
+		}
+
+		// window valid: shrink as far as possible, recording the best
+		for formed == required {
+			if bestLen == -1 || r-l+1 < bestLen {
+				bestLen = r - l + 1
+				bestL = l
+			}
+
+			left := s[l]
+			windowCounts[left]--
+			// crossed from "enough" to "no longer enough"
+			if need[left] > 0 && windowCounts[left] < need[left] {
+				formed--
+			}
+
+			l++
+		}
+	}
+
+	if bestLen == -1 {
+		return ""
+	}
+	return s[bestL : bestL+bestLen]
 }

@@ -39,8 +39,13 @@ func TestMinWindow(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("test: %d", i), func(t *testing.T) {
-			output := minWindow(tc.inputS, tc.inputT)
-			assert.Equal(t, tc.expectedOutput, output)
+			myOutput := minWindow(tc.inputS, tc.inputT)
+			assert.Equal(t, tc.expectedOutput, myOutput)
+		})
+
+		t.Run(fmt.Sprintf("claude test: %d", i), func(t *testing.T) {
+			claudeOutput := claudeMinWindow(tc.inputS, tc.inputT)
+			assert.Equal(t, tc.expectedOutput, claudeOutput)
 		})
 	}
 }
