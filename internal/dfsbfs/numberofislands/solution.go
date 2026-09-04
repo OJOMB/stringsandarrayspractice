@@ -45,7 +45,7 @@ DFS (recursion or an explicit stack) vs BFS (queue) — both are O(m·n) time, j
 
 */
 
-func numIslands(grid [][]byte) int {
+func numIslandsDFS(grid [][]byte) int {
 	if len(grid) == 0 {
 		return 0
 	}
@@ -57,8 +57,9 @@ func numIslands(grid [][]byte) int {
 		visited[r] = make([]bool, cols)
 	}
 
-	var recurs func(r, c int)
-	recurs = func(r, c int) {
+	// you give the recursDFS function a vertex in the matrix and it marks all the adjoining land (1) vertices as visited via dfs
+	var recursDFS func(r, c int)
+	recursDFS = func(r, c int) {
 		if r < 0 || c < 0 || r >= rows || c >= cols || visited[r][c] == true {
 			return
 		}
@@ -67,20 +68,83 @@ func numIslands(grid [][]byte) int {
 		if point != '1' {
 			return
 		}
+
 		visited[r][c] = true
 
-		recurs(r-1, c)
-		recurs(r+1, c)
-		recurs(r, c-1)
-		recurs(r, c+1)
+		recursDFS(r-1, c)
+		recursDFS(r+1, c)
+		recursDFS(r, c-1)
+		recursDFS(r, c+1)
 	}
 
 	count := 0
 	for r := range rows {
 		for c := range cols {
+			// we avoid double visiting by skipping all 0s and anything marked as part of a previous island (i.e. already visited)
 			if grid[r][c] == '1' && !visited[r][c] {
 				count++
-				recurs(r, c)
+				recursDFS(r, c)
+			}
+		}
+	}
+
+	return count
+}
+
+func numIslandsBFS(grid [][]byte) int {
+	if len(grid) == 0 {
+		return 0
+	}
+
+	rows, cols := len(grid), len(grid[0])
+
+	visited := make([][]bool, rows)
+	for r := range visited {
+		visited[r] = make([]bool, cols)
+	}
+
+	type vertex struct{ r, c int }
+	// all possible 4-directional moves (up, down, left, right)
+	directions := []vertex{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+
+	var recursBFS func(r, c int)
+	recursBFS = func(startR, startC int) {
+		queue := []vertex{{startR, startC}}
+		// mark the vertex as visited when it is enqueued to avoid multiple enqueues of the same vertex
+		visited[startR][startC] = true
+
+		for len(queue) > 0 {
+			// get the current vertex from the front of the queue
+			curr := queue[0]
+			// dequeue the current vertex for processing
+			queue = queue[1:]
+
+			for _, d := range directions {
+				nr, nc := curr.r+d.r, curr.c+d.c
+				// check if the new vertex is within the grid boundaries
+				if nr < 0 || nc < 0 || nr >= rows || nc >= cols {
+					continue
+				}
+
+				if visited[nr][nc] || grid[nr][nc] != '1' {
+					continue
+				}
+
+				visited[nr][nc] = true
+
+				// enqueue the new vertex for processing
+				queue = append(queue, vertex{nr, nc})
+			}
+		}
+	}
+
+	count := 0
+	for r := range rows {
+		for c := range cols {
+			// we avoid double visiting by skipping all 0s and anything marked as part of a previous island (i.e. already visited)
+			if grid[r][c] == '1' && !visited[r][c] {
+				count++
+				recursBFS(r, c)
 			}
 		}
 	}

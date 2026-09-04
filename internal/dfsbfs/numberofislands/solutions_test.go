@@ -35,8 +35,13 @@ func TestNumIslands(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
-		t.Run(fmt.Sprintf("test: %d", i), func(t *testing.T) {
-			output := numIslands(tc.inputGrid)
+		t.Run(fmt.Sprintf("test dfs: %d", i), func(t *testing.T) {
+			output := numIslandsDFS(tc.inputGrid)
+			assert.Equal(t, tc.expectedOutput, output)
+		})
+
+		t.Run(fmt.Sprintf("test bfs: %d", i), func(t *testing.T) {
+			output := numIslandsBFS(tc.inputGrid)
 			assert.Equal(t, tc.expectedOutput, output)
 		})
 	}
