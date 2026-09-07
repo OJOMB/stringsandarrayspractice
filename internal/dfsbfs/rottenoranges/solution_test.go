@@ -37,9 +37,14 @@ func TestOrangesRottingBFS(t *testing.T) {
 	}
 
 	for i, tc := range tests {
-		t.Run(fmt.Sprintf("test%d", i), func(t *testing.T) {
-			result := orangesRotting(tc.grid)
+		t.Run(fmt.Sprintf("test BFS: %d", i), func(t *testing.T) {
+			result := orangesRottingBFS(tc.grid)
 			assert.Equal(t, tc.expected, result)
 		})
+
+		// t.Run(fmt.Sprintf("test DFS: %d", i), func(t *testing.T) {
+		// 	result := orangesRottingDFS(tc.grid)
+		// 	assert.Equal(t, tc.expected, result)
+		// })
 	}
 }
